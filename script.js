@@ -32,26 +32,48 @@ class Ant {
         ctx.closePath();
     }
 
-    get move() {
+    bounceOffWalls() {
+        if (this.x + this.dx > canvas.width - this.radius || this.x + this.dx < this.radius) {
+            this.dx = -(this.dx);
+        }
+        if (this.y + this.dy > canvas.height - this.radius || this.y + this.dy < this.radius) {
+            this.dy = -this.dy;
+        }
+    }
+
+    move() {
         this.draw();
         this.x += this.dx;
         this.y += this.dy;
-        if (this.x + this.dx > canvas.width-this.radius || this.x + this.dx < this.radius) {
-            this.dx = -(this.dx);
-        }
-        if (this.y + this.dy > canvas.height-this.radius || this.y + this.dy < this.radius) {
-            this.dy = -this.dy;
-        }
+        this.xRange = ants.map(ant => ant.x);
+        this.yRange = ants.map(ant => ant.y);
+        this.bounceOffWalls();
     }
 }
 
 const ants = [];
 
+const getDistance = (x1, y1, x2, y2) => {
+    const xDistance = x2 - x1;
+    const yDistance = y2 - y1;
+
+    return Math.sqrt(Math.pow(xDistance, 2) + (yDistance, 2));
+}
+
 const spawnAnts = (num) => {
     for (let i = 0; i<num; i++){
-        let radius = randomNum(6, 20);
-        let x = randomNum(1200 - radius, radius);
-        let y = randomNum(600 - radius, radius);
+        let radius = randomNum(6, 50);
+        let x = randomNum(canvas.width - radius, radius);
+        let y = randomNum(canvas.height - radius, radius);
+        if (i !== 0) {
+            for (let j = 0; j < ants.length; j++) {
+                if (getDistance(x, y, ants[j].x, ants[j].y) - (ants[j].radius+radius) < 0) {
+                    x = randomNum(canvas.width - radius, radius);
+                    y = randomNum(canvas.height - radius, radius);
+                    j = -1;
+                }
+            }
+        }
         let dx = randomNum(-3, 3);
         let dy = randomNum(-3, 3)
         let antObj = new Ant(x, y, radius, dx, dy);
@@ -59,15 +81,15 @@ const spawnAnts = (num) => {
     }
 };
 
-spawnAnts(10);
-
 const animate = () => {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ants.forEach(ant => {
-        ant.move;
+        ant.move();
     });  
     window.requestAnimationFrame(animate);
 };
+
+spawnAnts(10);
 window.requestAnimationFrame(animate);
 
 // //radius(x,y) difference
