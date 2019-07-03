@@ -5,7 +5,14 @@ canvas.height = 600;
 
 const ctx = canvas.getContext('2d');
 
-const randomGenerator = (max, min) => Math.random() * (max - min) + min;
+const randomNum = (max, min) => {
+    const generatedNum = Math.floor(Math.random() * (max - min) + min);
+    // exclude 0
+    if (generatedNum === 0) {
+        return randomNum(max, min);
+    }
+    return generatedNum;
+};
 
 class Ant {
     constructor(x, y, radius, dx, dy) {
@@ -15,51 +22,53 @@ class Ant {
         this.dx = dx;
         this.dy = dy;
     }
+
+    draw() {
+        console.log(this.x, this.y)
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
+        ctx.fillStyle = "green";
+        ctx.fill();
+        ctx.closePath();
+    }
+
+    get move() {
+        this.draw();
+        this.x += this.dx;
+        this.y += this.dy;
+        if (this.x + this.dx > canvas.width-this.radius || this.x + this.dx < this.radius) {
+            this.dx = -(this.dx);
+        }
+        if (this.y + this.dy > canvas.height-this.radius || this.y + this.dy < this.radius) {
+            this.dy = -this.dy;
+        }
+    }
 }
 
 const ants = [];
 
-
-
-const antGenerator = (x, y, radius) => {
-    ctx.beginPath();
-    ctx.arc(x, y, radius, 0, Math.PI * 2, false);
-    ctx.fillStyle = "green";
-    ctx.fill();
-    ctx.closePath();
-}
-
-const radiusCoordinates = [];
-
-const spawnAnts = (num, radius) => {
+const spawnAnts = (num) => {
     for (let i = 0; i<num; i++){
-        let x = randomCoordinate(1200 - radius, radius);
-        let y = randomCoordinate(600 - radius, radius);
-        let antObj = {
-            x,
-            y,
-            radius,
-            dx,
-            dy,
-        } 
+        let radius = randomNum(6, 20);
+        let x = randomNum(1200 - radius, radius);
+        let y = randomNum(600 - radius, radius);
+        let dx = randomNum(-3, 3);
+        let dy = randomNum(-3, 3)
+        let antObj = new Ant(x, y, radius, dx, dy);
         ants.push(antObj);
     }
 };
 
-let a =50;
-let b= 50;
-const draw = () => {
+spawnAnts(10);
+
+const animate = () => {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    antGenerator(a,b, 12);
-    a += 2;
-    b += -2;
-    console.log(x,y)
+    ants.forEach(ant => {
+        ant.move;
+    });  
+    window.requestAnimationFrame(animate);
 };
-setInterval(draw, 10);
+window.requestAnimationFrame(animate);
 
-spawnAnts(0, 12);
-
-//radius(x,y) difference
-//obj
-//velocity, (dy,dx) => random
-
+// //radius(x,y) difference
+// //obj
