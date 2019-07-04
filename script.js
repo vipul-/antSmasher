@@ -148,5 +148,19 @@ const animate = () => {
 spawnAnts(12);
 window.requestAnimationFrame(animate);
 
-// //radius(x,y) difference
-// //obj
+const smash = (event) => {
+    let clickX = event.x;
+    let clickY = event.y;
+
+    clickX -= canvas.offsetLeft;
+    clickY -= canvas.offsetTop;
+    
+    for (let i = 0; i < ants.length; i++) {
+        if (getDistance(clickX, clickY, ants[i].x, ants[i].y) - ants[i].radius < 0) {
+            ants.splice(i, 1);
+        }
+    }
+
+}
+
+canvas.addEventListener('mousedown', smash, false);
