@@ -1,7 +1,8 @@
 const canvas = document.querySelector('canvas');
+const score = document.querySelector('#score span');
 
 canvas.width = 1200;
-canvas.height = 600;
+canvas.height = 500;
 
 const colorPallets = [
     '#271f30',
@@ -148,6 +149,8 @@ const animate = () => {
 spawnAnts(12);
 window.requestAnimationFrame(animate);
 
+scoreCount = 0;
+
 const smash = (event) => {
     let clickX = event.x;
     let clickY = event.y;
@@ -158,6 +161,8 @@ const smash = (event) => {
     for (let i = 0; i < ants.length; i++) {
         if (getDistance(clickX, clickY, ants[i].x, ants[i].y) - ants[i].radius < 0) {
             ants.splice(i, 1);
+            scoreCount++;
+            score.innerHTML = scoreCount;
         }
     }
 

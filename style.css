@@ -7,3 +7,7 @@ canvas {
     margin: 0 auto;
     background-color: #d3f6f3;
 } 
+
+h1, #score {
+    text-align: center;
+}
