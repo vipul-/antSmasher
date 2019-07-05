@@ -150,6 +150,7 @@ spawnAnts(12);
 window.requestAnimationFrame(animate);
 
 scoreCount = 0;
+totalAnts = ants.length;
 
 const smash = (event) => {
     let clickX = event.x;
@@ -163,6 +164,9 @@ const smash = (event) => {
             ants.splice(i, 1);
             scoreCount++;
             score.innerHTML = scoreCount;
+            if (scoreCount === totalAnts) {
+                alert("Game over!");
+            }
         }
     }
 
